@@ -1,24 +1,31 @@
 describe("toMarkdown", function(){
 
-  it("converts links to markdown", function(){
+  it("keeps links intact", function(){
     var html = "<a href='http://google.com'>test</a>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
-    expect(markdown).toBe("[test](http://google.com)");
+    expect(markdown).toBe(html);
   });
 
-  it("converts links with bolds inside to markdown", function(){
+  it("only allows href, rel, and target attrs in a link", function(){
+    var html = "<a rel='nofollow' target='_blank' href='http://google.com' style='display: none'>test</a>",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("<a rel='nofollow' target='\\_blank' href='http://google.com'>test</a>");
+  });
+
+  it("converts bolds inside a link to markdown", function(){
     var html = "<a href='http://google.com'><strong>test</strong></a>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
-    expect(markdown).toBe("[**test**](http://google.com)");
+    expect(markdown).toBe("<a href='http://google.com'>**test**</a>");
   });
 
   it("converts links with square brackets correctly", function(){
     var html = "[<a href='http://google.com'>1</a>]",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
-    expect(markdown).toBe("\\[[1](http://google.com)\\]");
+    expect(markdown).toBe("\\[<a href='http://google.com'>1</a>\\]");
   });
 
   it("coverts bold to markdown", function(){
@@ -102,7 +109,7 @@ describe("toMarkdown", function(){
     var html = "<p><a href=\"#\">Hello</a> this is my <strong>amazing <em>piece</em></strong> <em>I think</em> that <strong>it should</strong> be able to be convereted correctly.</p>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
-    expect(markdown).toBe("[Hello](#) this is my **amazing _piece_** _I think_ that **it should** be able to be convereted correctly.\n\n");
+    expect(markdown).toBe("<a href=\"#\">Hello</a> this is my **amazing _piece_** _I think_ that **it should** be able to be convereted correctly.\n\n");
   });
 
   it("correctly encodes * characters", function(){
@@ -126,25 +133,25 @@ describe("toMarkdown", function(){
     expect(markdown).toBe("test\\-something");
   });
 
-  it("strips whitepace from bolds", function(){
+  it("strips whitespace from bolds", function(){
     var html = "<b> Test</b>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
     expect(markdown).toBe("**Test**");
   });
 
-  it("strips whitepace from italics", function(){
+  it("strips whitespace from italics", function(){
     var html = "<i> Test</i>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
     expect(markdown).toBe("_Test_");
   });
 
-  it("strips whitepace from links", function(){
+  it("strips whitespace from links", function(){
     var html = "<a href='test'> test</a>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
-    expect(markdown).toBe("[test](test)");
+    expect(markdown).toBe("<a href='test'>test</a>");
   });
 
   it("removes newlines from bolds", function(){
@@ -165,7 +172,7 @@ describe("toMarkdown", function(){
     var html = "<a href='test'>test<br></a>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
-    expect(markdown).toBe("[test](test)");
+    expect(markdown).toBe("<a href='test'>test</a>");
   });
 
 });

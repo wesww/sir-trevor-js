@@ -48,11 +48,21 @@ SirTrevor.toMarkdown = function(content, type) {
     return "_" + p1.replace(/<(.)?br(.)?>/g, '') + "_" + p2;
   }
 
+  function sanitiseHTML(match, attrs, content) {
+    content = content.trim().replace(/<(.)?br(.)?>/g, '');
+
+    attrs = _.filter(attrs.split(" "), function(attr) {
+      return /rel=['"]nofollow['"]/.test(attr) ||
+             /target=['"]\\_blank['"]/.test(attr) ||
+             /href=['"].*['"]/.test(attr);
+    }).join(" ");
+
+    return "<a " + attrs + ">" + content +"</a>";
+  }
+
   markdown = markdown.replace(/<(\w+)(?:\s+\w+="[^"]+(?:"\$[^"]+"[^"]+)?")*>\s*<\/\1>/gim, '') //Empty elements
                       .replace(/\n/mg,"")
-                      .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/gim, function(match, p1, p2){
-                        return "[" + p2.trim().replace(/<(.)?br(.)?>/g, '') + "]("+ p1 +")";
-                      }) // Hyperlinks
+                      .replace(/<a(.*?)>(.*?)<\/a>/gim, sanitiseHTML)
                       .replace(/<strong>(?:\s*)(.*?)(\s)*?<\/strong>/gim, replaceBolds)
                       .replace(/<b>(?:\s*)(.*?)(\s*)?<\/b>/gim, replaceBolds)
                       .replace(/<em>(?:\s*)(.*?)(\s*)?<\/em>/gim, replaceItalics)
@@ -90,8 +100,8 @@ SirTrevor.toMarkdown = function(content, type) {
     }
   }
 
-  // Strip remaining HTML
-  markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
+  // Strip any remaining HTML that isn't an anchor tag
+  markdown = markdown.replace(/<(?!\/?\s*(a\b)).*?>/gi, "");
 
   return markdown;
 };
