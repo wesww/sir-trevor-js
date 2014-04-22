@@ -504,3 +504,30 @@ ul.st-text-block {
 
 .st-format-btn--Unlink {
   text-decoration: line-through; }
+
+.st-link-modal__wrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 11;
+  opacity: 0;
+  visibility: hidden;
+  background-color: rgba(0, 0, 0, 0.7); }
+
+.st-link-modal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 400px;
+  height: 300px;
+  margin-left: -200px;
+  margin-top: -150px;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 3px; }
+
+.st-link-modal--is-ready {
+  visibility: visible;
+  opacity: 1; }
