@@ -27,6 +27,7 @@ SirTrevor.toMarkdown = function(content, type) {
                     .replace(/\[/g, "\\[")
                     .replace(/\]/g, "\\]")
                     .replace(/\_/g, "\\_")
+                    .replace(/"\\_(\w+)"/, "\"_$1\"")
                     .replace(/\(/g, "\\(")
                     .replace(/\)/g, "\\)")
                     .replace(/\-/g, "\\-");

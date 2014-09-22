@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-04-22
+ * 2014-09-22
  */
 
 (function ($, _){
@@ -717,6 +717,7 @@
                       .replace(/\[/g, "\\[")
                       .replace(/\]/g, "\\]")
                       .replace(/\_/g, "\\_")
+                      .replace(/"\\_(\w+)"/, "\"_$1\"")
                       .replace(/\(/g, "\\(")
                       .replace(/\)/g, "\\)")
                       .replace(/\-/g, "\\-");
