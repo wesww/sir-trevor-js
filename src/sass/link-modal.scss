@@ -28,9 +28,31 @@
   background-color: white;
   border: 2px solid black;
   border-radius: 3px;
+  padding: 10px 20px;
 }
 
 .st-link-modal--is-ready {
   visibility: visible;
   opacity: 1;
+}
+
+.st-link-modal__title {
+  line-height: 1.4;
+  margin: 0;
+}
+.st-link-modal__link-href {
+  margin-bottom: 10px;
+  width: 100%;
+}
+.st-link-modal__button {
+  border: 0;
+  background: #42474b;
+  border-radius: 0.2em;
+  padding: 0.35em 1em;
+  font-size: 1.125em;
+  cursor: pointer;
+  color: #fff;
+  position: relative;
+  z-index: 10;
+  margin: 10px 0;
 }
