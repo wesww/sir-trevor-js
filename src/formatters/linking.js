@@ -114,14 +114,16 @@
 
       template: _.template([
         "<div class='st-link-modal'>",
-          "<h2>Make a link</h2>",
+          "<h2 class='st-link-modal__title'>Make a link</h2>",
           "<form>",
-            "<table>",
+            "<table width='100%'>",
               "<tr>",
-                "<td>",
+                "<td colspan='2'>",
                   "<label>URL</label>",
                 "</td>",
-                "<td>",
+              "</tr>",
+              "<tr>",
+                "<td colspan='2'>",
                   "<input class='st-link-modal__link-href' value='<%= link %>' />",
                 "</td>",
               "</tr>",
@@ -145,7 +147,7 @@
               "</tr>",
               "<tr>",
                 "<td>",
-                  "<input type='submit' />",
+                  "<button type='submit' class='st-link-modal__button'>Submit</button>",
                 "</td>",
               "</tr>",
             "</table>",
@@ -153,43 +155,6 @@
         "</div>"
       ].join('')),
 
-      
-      
-//       template: _.template([
-//         "<div class='st-link-modal'>",
-//           "<h2>Make a link</h2>",
-//           "<form>",
-//             "<div class='form__field'>",
-//               "<div class='form__field-label'>",
-//                 "<label>URL</label>",
-//               "</div>",
-//               "<div class='form__field-input'>",
-//                 "<input class='st-link-modal__link-href' value='<%= link %>' />",
-//               "</div>",
-//             "</div>",
-//             "<div class='form__field'>",
-//               "<div class='form__field-label'>",
-//                 "<label>Open in new window?</label>",
-//               "</div>",
-//               "<div class='form__field-input'>",
-//                 "<input type='checkbox' class='st-link-modal__new-window-option'",
-//                     "<% if (openInNewWindow) { %> checked='checked'<% } %> />",
-//               "</div>",
-//             "</div>",
-//             "<div class='form__field'>",
-//               "<div class='form__field-label'>",
-//                 "<label>Block from search engines</label>",
-//               "</div>",
-//               "<div class='form__field-input'>",
-//                 "<input type='checkbox' class='st-link-modal__block-search-engines-option'",
-//                     "<% if (blockSearchEngines) { %> checked='checked'<% } %> />",
-//                 "</div>",
-//               "</div>",
-//             "<input type='submit' />",
-//           "</form>",
-//         "</div>"
-//       ].join('')),
-//
       render: function() {
         var html = this.template({
             openInNewWindow: this.linkNode.getAttribute('target') == '_blank',
