@@ -54,7 +54,7 @@ SirTrevor.toMarkdown = function(content, type) {
 
     attrs = _.filter(attrs.split(" "), function(attr) {
       return /rel=['"]nofollow['"]/.test(attr) ||
-             /target=['"]\\_blank['"]/.test(attr) ||
+             /target=['"]_blank['"]/.test(attr) ||
              /href=['"].*['"]/.test(attr);
     }).join(" ");
 

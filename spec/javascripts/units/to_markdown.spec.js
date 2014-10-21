@@ -8,10 +8,10 @@ describe("toMarkdown", function(){
   });
 
   it("only allows href, rel, and target attrs in a link", function(){
-    var html = "<a rel='nofollow' target='_blank' href='http://google.com' style='display: none'>test</a>",
+    var html = '<a rel="nofollow" target="\_blank" href="http://google.com" style="display: none">test</a>',
         markdown = SirTrevor.toMarkdown(html, "Text");
 
-    expect(markdown).toBe("<a rel='nofollow' target='\\_blank' href='http://google.com'>test</a>");
+    expect(markdown).toBe('<a rel="nofollow" target="_blank" href="http://google.com">test</a>');
   });
 
   it("converts bolds inside a link to markdown", function(){
