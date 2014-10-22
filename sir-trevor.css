@@ -551,6 +551,8 @@ ul.st-text-block {
   color: #fff;
   position: relative;
   z-index: 10;
-  margin: 10px 0; }
+  margin: 10px 0 10px 10px; }
+  .st-link-modal__button:first-child {
+    margin-left: 0; }
 
 /*# sourceMappingURL=sir-trevor.css.map */

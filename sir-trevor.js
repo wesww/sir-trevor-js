@@ -2335,10 +2335,9 @@
   
         className: 'st-link-modal__wrapper',
   
-        bound: ["onFormSubmit", "onElClicked"],
+        bound: ["onFormSubmit", "onElClicked", "onCancelClicked"],
   
         initialize: function() {
-          // this.$el.bind('click', '.st-link-modal-done', this.onDoneButtonClick);
           this.$el.bind('click', this.onElClicked);
         },
   
@@ -2412,6 +2411,9 @@
           this.$form = this.$el.find('form');
           this.$form.on('submit', this.onFormSubmit);
   
+          this.$cancelButton = this.$el.find('.st-link-modal__button--cancel');
+          this.$cancelButton.bind('click', this.onCancelClicked);
+  
           return this;
         },
   
@@ -2441,6 +2443,12 @@
           if (e.target == this.$el[0]) {
             this.cancel();
           }
+        },
+  
+        onCancelClicked: function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.cancel();
         },
   
         cancel: function() {
