@@ -35,7 +35,7 @@ SirTrevor.Blocks.List = (function() {
 
     toMarkdown: function(markdown) {
       return markdown.replace(/<\/li>/mg,"\n")
-                     .replace(/<\/?[^>]+(>|$)/g, "")
+                     .replace(/<(?!\/?\s*(a\b)).*?>/gi, "")
                      .replace(/^(.+)$/mg," - $1");
     },
 

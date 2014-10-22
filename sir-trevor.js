@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-10-21
+ * 2014-10-22
  */
 
 (function ($, _){
@@ -2117,7 +2117,7 @@
   
       toMarkdown: function(markdown) {
         return markdown.replace(/<\/li>/mg,"\n")
-                       .replace(/<\/?[^>]+(>|$)/g, "")
+                       .replace(/<(?!\/?\s*(a\b)).*?>/gi, "")
                        .replace(/^(.+)$/mg," - $1");
       },
   
