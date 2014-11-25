@@ -1,10 +1,13 @@
 /*
-* Sir Trevor Editor Store
-* By default we store the complete data on the instances $el
-* We can easily extend this and store it on some server or something
-*/
+ * Sir Trevor Editor Store
+ * By default we store the complete data on the instances $el
+ * We can easily extend this and store it on some server or something
+ */
 
-SirTrevor.editorStore = function(editor, method, options) {
+var _ = require('./lodash');
+var stlog = require('./helpers/log');
+
+module.exports = function(editor, method, options) {
   var resp;
 
   options = options || {};
@@ -12,26 +15,27 @@ SirTrevor.editorStore = function(editor, method, options) {
   switch(method) {
 
     case "create":
-      // Grab our JSON from the textarea and clean any whitespace incase there is a line wrap between the opening and closing textarea tags
+      // Grab our JSON from the textarea and clean any whitespace in case
+      // there is a line wrap between the opening and closing textarea tags
       var content = editor.$el.val().trim();
-      editor.dataStore = { data: [] };
+    editor.dataStore = { data: [] };
 
-      if (content.length > 0) {
-        try {
-          // Ensure the JSON string has a data element that's an array
-          var str = JSON.parse(content);
-          if (!_.isUndefined(str.data)) {
-            // Set it
-            editor.dataStore = str;
-          }
-        } catch(e) {
-          editor.errors.push({ text: i18n.t("errors:load_fail") });
-          editor.renderErrors();
-
-          SirTrevor.log('Sorry there has been a problem with parsing the JSON');
-          SirTrevor.log(e);
+    if (content.length > 0) {
+      try {
+        // Ensure the JSON string has a data element that's an array
+        var str = JSON.parse(content);
+        if (!_.isUndefined(str.data)) {
+          // Set it
+          editor.dataStore = str;
         }
+      } catch(e) {
+        editor.errors.push({ text: i18n.t("errors:load_fail") });
+        editor.renderErrors();
+
+        stlog('Sorry there has been a problem with parsing the JSON');
+        stlog(e);
       }
+    }
     break;
 
     case "reset":
@@ -40,9 +44,9 @@ SirTrevor.editorStore = function(editor, method, options) {
 
     case "add":
       if (options.data) {
-        editor.dataStore.data.push(options.data);
-        resp = editor.dataStore;
-      }
+      editor.dataStore.data.push(options.data);
+      resp = editor.dataStore;
+    }
     break;
 
     case "save":

@@ -5,7 +5,9 @@
   Tweaked so we use the parent class of dropzone
 */
 
-(function($){
+(function() {
+  var $ = require('jquery');
+
   function dragEnter(e) {
     e.preventDefault();
   }
@@ -49,4 +51,4 @@
     return this;
   };
 
-})(jQuery);
+})();

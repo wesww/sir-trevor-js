@@ -1,3 +1,5 @@
+var utils = require('./utils');
+
 var bestNameFromField = function(field) {
   var msg = field.attr("data-st-name") || field.attr("name");
 
@@ -5,10 +7,10 @@ var bestNameFromField = function(field) {
     msg = 'Field';
   }
 
-  return SirTrevor.Utils.capitalize(msg);
+  return utils.capitalize(msg);
 };
 
-SirTrevor.BlockValidations = {
+module.exports = {
 
   errors: [],
 

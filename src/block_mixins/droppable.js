@@ -1,6 +1,8 @@
 /* Adds drop functionaltiy to this block */
 
-SirTrevor.BlockMixins.Droppable = {
+var config = require('../config');
+
+module.exports = {
 
   mixinName: "Droppable",
   valid_drop_file_types: ['File', 'Files', 'text/plain', 'text/uri-list'],
@@ -8,7 +10,7 @@ SirTrevor.BlockMixins.Droppable = {
   initializeDroppable: function() {
     SirTrevor.log("Adding droppable to block " + this.blockID);
 
-    this.drop_options = Object.assign({}, SirTrevor.DEFAULTS.Block.drop_options, this.drop_options);
+    this.drop_options = Object.assign({}, config.defaults.Block.drop_options, this.drop_options);
 
     var drop_html = $(_.template(this.drop_options.html)({ block: this }));
 
@@ -46,7 +48,7 @@ SirTrevor.BlockMixins.Droppable = {
       this.onDrop(e.dataTransfer);
     }
 
-    SirTrevor.EventBus.trigger('block:content:dropped', this.blockID);
+    eventBus.trigger('block:content:dropped', this.blockID);
   }
 
 };

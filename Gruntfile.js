@@ -11,7 +11,6 @@ module.exports = function(grunt) {
                  ' */\n\n'
                 ].join("\n");
 
-  grunt.loadNpmTasks('grunt-rigger');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -37,17 +36,6 @@ module.exports = function(grunt) {
       }
     },
 
-    rig: {
-      build: {
-        options: {
-          banner: banner
-        },
-        files: {
-          'sir-trevor.js': ['src/sir-trevor.js']
-        }
-      }
-    },
-
     uglify: {
       options: {
         mangle: false,
@@ -63,7 +51,7 @@ module.exports = function(grunt) {
     watch: {
       scripts: {
         files: ['src/*.js', 'src/**/*.js', 'src/sass/*.scss'],
-        tasks: ['sass', 'rig']
+        tasks: ['sass']
       }
     },
 
@@ -103,9 +91,9 @@ module.exports = function(grunt) {
   // Default task.
   grunt.loadNpmTasks('grunt-contrib-jasmine');
 
-  grunt.registerTask('travis', ['rig', 'jasmine']);
+  grunt.registerTask('travis', ['jasmine']);
 
-  grunt.registerTask('default', ['sass', 'rig', 'uglify', 'jasmine']);
+  grunt.registerTask('default', ['sass', 'uglify', 'jasmine']);
 
   grunt.registerTask('jasmine-browser', ['server','watch']);
 

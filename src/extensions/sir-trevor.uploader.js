@@ -3,7 +3,9 @@
 *   Generic Upload implementation that can be extended for blocks
 */
 
-SirTrevor.fileUploader = function(block, file, success, error) {
+var config = require('../config');
+
+module.exports = function(block, file, success, error) {
 
   var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
   var data = new FormData();
@@ -31,7 +33,7 @@ SirTrevor.fileUploader = function(block, file, success, error) {
   };
 
   var xhr = $.ajax({
-    url: SirTrevor.DEFAULTS.uploadUrl,
+    url: config.defaults.uploadUrl,
     data: data,
     cache: false,
     contentType: false,

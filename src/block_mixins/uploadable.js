@@ -1,4 +1,6 @@
-SirTrevor.BlockMixins.Uploadable = {
+var config = require('../config');
+
+module.exports = {
 
   mixinName: "Uploadable",
 
@@ -6,9 +8,9 @@ SirTrevor.BlockMixins.Uploadable = {
 
   initializeUploadable: function() {
     SirTrevor.log("Adding uploadable to block " + this.blockID);
-    this.withMixin(SirTrevor.BlockMixins.Ajaxable);
+    this.withMixin(require('./ajaxable'));
 
-    this.upload_options = Object.assign({}, SirTrevor.DEFAULTS.Block.upload_options, this.upload_options);
+    this.upload_options = Object.assign({}, config.defaults.Block.upload_options, this.upload_options);
     this.$inputs.append(_.template(this.upload_options.html, this));
   },
 

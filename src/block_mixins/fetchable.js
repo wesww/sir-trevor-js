@@ -1,9 +1,9 @@
-SirTrevor.BlockMixins.Fetchable = {
+module.exports = {
 
   mixinName: "Fetchable",
 
   initializeFetchable: function(){
-    this.withMixin(SirTrevor.BlockMixins.Ajaxable);
+    this.withMixin(require('./ajaxable'));
   },
 
   fetch: function(options, success, failure){

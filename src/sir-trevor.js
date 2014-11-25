@@ -1,212 +1,113 @@
-(function ($, _){
+var $ = require('jquery');
+var _ = require('./lodash');
 
-  var root = this,
-      SirTrevor;
+require('./helpers/event'); // extends jQuery itself
+require('./vendor/array-includes'); // shims ES7 Array.prototype.includes
 
-  SirTrevor = root.SirTrevor = {};
-  SirTrevor.DEBUG = false;
-  SirTrevor.SKIP_VALIDATION = false;
+var SirTrevor = {
+  config: require('./config'),
+};
 
-  SirTrevor.version = "0.3.0";
-  SirTrevor.LANGUAGE = "en";
+SirTrevor.BlockMixins = require('./block_mixins');
 
-  function $element(el) {
-    return el instanceof $ ? el : $(el);
+SirTrevor.Blocks = {};
+SirTrevor.Formatters = {};
+
+SirTrevor.log = require('./helpers/log');
+SirTrevor.Locales = require('./locales');
+
+// Extensions
+SirTrevor.editorStore = require('./extensions/sir-trevor.editor-store');
+SirTrevor.Submittable = require('./extensions/sir-trevor.submittable');
+SirTrevor.fileUploader = require('./extensions/sir-trevor.uploader');
+
+SirTrevor.BlockPositioner = require('./block.positioner');
+SirTrevor.BlockReorder = require('./block.reorder');
+SirTrevor.BlockDeletion = require('./block.deletion');
+SirTrevor.BlockValidations = require('./block.validations');
+SirTrevor.BlockStore = require('./block.store');
+
+SirTrevor.SimpleBlock = require('./simple-block');
+SirTrevor.Block = require('./block');
+SirTrevor.Formatter = require('./formatter');
+SirTrevor.Formatters = require('./formatters');
+
+SirTrevor.Blocks = require('./blocks');
+
+SirTrevor.BlockControl = require('./block-control');
+SirTrevor.BlockControls = require('./block-controls');
+SirTrevor.FloatingBlockControls = require('./floating-block-controls');
+
+SirTrevor.FormatBar = require('./format-bar');
+SirTrevor.Editor = require('./sir-trevor-editor');
+
+/* We need a form handler here to handle all the form submits */
+SirTrevor.setDefaults = function(options) {
+  config.defaults = Object.assign(config.defaults, options || {});
+};
+
+var formBound = false; // Flag to tell us once we've bound our submit event
+SirTrevor.bindFormSubmit = function(form) {
+  if (!formBound) {
+    new SirTrevor.Submittable(form);
+    form.on('submit.sirtrevor', this.onFormSubmit);
+    formBound = true;
+  }
+};
+
+SirTrevor.onBeforeSubmit = function(should_validate) {
+  // Loop through all of our instances and do our form submits on them
+  var errors = 0;
+  SirTrevor.config.instances.forEach(function(inst, i) {
+    errors += inst.onFormSubmit(should_validate);
+  });
+  SirTrevor.log("Total errors: " + errors);
+
+  return errors;
+};
+
+SirTrevor.onFormSubmit = function(ev) {
+  var errors = SirTrevor.onBeforeSubmit();
+
+  if(errors > 0) {
+    eventBus.trigger("onError");
+    ev.preventDefault();
+  }
+};
+
+SirTrevor.getInstance = function(identifier) {
+  if (_.isUndefined(identifier)) {
+    return this.config.instances[0];
   }
 
-  /*
-   Define default attributes that can be extended through an object passed to the
-   initialize function of SirTrevor
-  */
-
-  SirTrevor.DEFAULTS = {
-    defaultType: false,
-    spinner: {
-      className: 'st-spinner',
-      lines: 9,
-      length: 8,
-      width: 3,
-      radius: 6,
-      color: '#000',
-      speed: 1.4,
-      trail: 57,
-      shadow: false,
-      left: '50%',
-      top: '50%'
-    },
-    blockLimit: 0,
-    blockTypeLimits: {},
-    required: [],
-    uploadUrl: '/attachments',
-    baseImageUrl: '/sir-trevor-uploads/',
-    errorsContainer: undefined,
-    toMarkdown: {
-      aggresiveHTMLStrip: false
-    }
-  };
-
-  SirTrevor.BlockMixins = {};
-  SirTrevor.Blocks = {};
-  SirTrevor.Formatters = {};
-  SirTrevor.instances = [];
-  SirTrevor.Events = Eventable;
-
-  var formBound = false; // Flag to tell us once we've bound our submit event
-
-  /* Generic function binding utility, used by lots of our classes */
-  var FunctionBind = {
-    bound: [],
-    _bindFunctions: function(){
-      this.bound.forEach(function(f) {
-        this[f] = this[f].bind(this)
-      }, this);
-    }
-  };
-
-  var Renderable = {
-    tagName: 'div',
-    className: 'sir-trevor__view',
-    attributes: {},
-
-    $: function(selector) {
-      return this.$el.find(selector);
-    },
-
-    render: function() {
-      return this;
-    },
-
-    destroy: function() {
-      if (!_.isUndefined(this.stopListening)) { this.stopListening(); }
-      this.$el.remove();
-    },
-
-    _ensureElement: function() {
-      if (!this.el) {
-        var attrs = Object.assign({}, _.result(this, 'attributes')),
-            html;
-        if (this.id) { attrs.id = this.id; }
-        if (this.className) { attrs['class'] = this.className; }
-
-        if (attrs.html) {
-          html = attrs.html;
-          delete attrs.html;
-        }
-        var $el = $('<' + this.tagName + '>').attr(attrs);
-        if (html) { $el.html(html); }
-        this._setElement($el);
-      } else {
-        this._setElement(this.el);
-      }
-    },
-
-    _setElement: function(element) {
-      this.$el = $element(element);
-      this.el = this.$el[0];
-      return this;
-    }
-  };
-
-  //= helpers
-  //= locales.js
-  //= vendor
-  //= extensions
-  //= utils.js
-  //= to-html.js
-  //= to-markdown.js
-
-  SirTrevor.EventBus = Object.assign({}, SirTrevor.Events);
-
-  /* Block Mixins */
-  //= block_mixins
-  //= block.positioner.js
-  //= block.reorder.js
-  //= block.deletion.js
-  //= block.validations.js
-  //= block.store.js
-  //= simple-block.js
-  //= block.js
-  //= formatter.js
-
-  /* Default Blocks */
-  //= blocks
-  /* Default Formatters */
-  //= formatters
-  /* Marker */
-  //= block-control.js
-  //= block-controls.js
-  //= floating-block-controls.js
-  /* FormatBar */
-  //= format-bar.js
-  //= sir-trevor-editor.js
-
-  /* We need a form handler here to handle all the form submits */
-  SirTrevor.setDefaults = function(options) {
-    SirTrevor.DEFAULTS = Object.assign(SirTrevor.DEFAULTS, options || {});
-  };
-
-  SirTrevor.bindFormSubmit = function(form) {
-    if (!formBound) {
-      new SirTrevor.Submittable(form);
-      form.on('submit.sirtrevor', this.onFormSubmit);
-      formBound = true;
-    }
-  };
-
-  SirTrevor.onBeforeSubmit = function(should_validate) {
-    // Loop through all of our instances and do our form submits on them
-    var errors = 0;
-    SirTrevor.instances.forEach(function(inst, i) {
-      errors += inst.onFormSubmit(should_validate);
+  if (_.isString(identifier)) {
+    return this.config.instances.find(function(editor) {
+      return editor.ID === identifier;
     });
-    SirTrevor.log("Total errors: " + errors);
+  }
 
-    return errors;
-  };
+  return this.config.instances[identifier];
+};
 
-  SirTrevor.onFormSubmit = function(ev) {
-    var errors = SirTrevor.onBeforeSubmit();
+SirTrevor.setBlockOptions = function(type, options) {
+  var block = SirTrevor.Blocks[type];
 
-    if(errors > 0) {
-      SirTrevor.EventBus.trigger("onError");
-      ev.preventDefault();
-    }
-  };
+  if (_.isUndefined(block)) {
+    return;
+  }
 
-  SirTrevor.getInstance = function(identifier) {
-    if (_.isUndefined(identifier)) {
-      return this.instances[0];
-    }
+  Object.assign(block.prototype, options || {});
+};
 
-    if (_.isString(identifier)) {
-      return this.instances.find(function(editor) {
-        return editor.ID === identifier;
-      });
-    }
+SirTrevor.runOnAllInstances = function(method) {
+  if (SirTrevor.Editor.prototype.hasOwnProperty(method)) {
+    var methodArgs = Array.prototype.slice.call(arguments, 1);
+    Array.prototype.forEach.call(SirTrevor.config.instances, function(i) {
+      i[method].apply(null, methodArgs)
+    });
+  } else {
+    SirTrevor.log("method doesn't exist");
+  }
+};
 
-    return this.instances[identifier];
-  };
-
-  SirTrevor.setBlockOptions = function(type, options) {
-    var block = SirTrevor.Blocks[type];
-
-    if (_.isUndefined(block)) {
-      return;
-    }
-
-    Object.assign(block.prototype, options || {});
-  };
-
-  SirTrevor.runOnAllInstances = function(method) {
-    if (SirTrevor.Editor.prototype.hasOwnProperty(method)) {
-      var methodArgs = Array.prototype.slice.call(arguments, 1);
-      Array.prototype.forEach.call(SirTrevor.instances, function(i) {
-        i[method].apply(null, methodArgs)
-      });
-    } else {
-      SirTrevor.log("method doesn't exist");
-    }
-  };
-
-}(jQuery, _));
-
+module.exports = SirTrevor;

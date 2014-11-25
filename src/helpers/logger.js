@@ -2,8 +2,10 @@
 * Ultra simple logging
 */
 
-SirTrevor.log = function(message) {
-  if (!_.isUndefined(console) && SirTrevor.DEBUG) {
+var config = require('../config');
+
+module.exports = function(message) {
+  if (!_.isUndefined(console) && config.debug) {
     console.log(message);
   }
 };

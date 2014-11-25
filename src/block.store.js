@@ -1,10 +1,12 @@
-SirTrevor.BlockStore = {
+var utils = require('./utils');
+
+module.exports = {
 
   blockStorage: {},
 
   createStore: function(blockData) {
     this.blockStorage = {
-      type: SirTrevor.Utils.underscored(this.type),
+      type: utils.underscored(this.type),
       data: blockData || {}
     };
   },
@@ -45,7 +47,7 @@ SirTrevor.BlockStore = {
 
   beforeLoadingData: function() {
     SirTrevor.log("loadData for " + this.blockID);
-    SirTrevor.EventBus.trigger("block:loadData", this.blockID);
+    eventBus.trigger("block:loadData", this.blockID);
     this.loadData(this.getData());
   },
 

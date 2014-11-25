@@ -1,4 +1,4 @@
-SirTrevor.BlockMixins.Controllable = {
+module.exports = {
 
   mixinName: "Controllable",
 
